@@ -99,7 +99,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.MAIN_widget = QtWidgets.QWidget()
         self.MAIN_widget.setLayout(MAIN_layout)
 
-        self.MAIN_widget.setBackground((0,0,0))
         self.setCentralWidget(self.MAIN_widget)
 
         self.number = 0
