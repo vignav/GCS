@@ -25,9 +25,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.switch_control_1 = SwitchControl(bg_color="#777777", circle_color="#11111", active_color="#ff0000", animation_curve=QtCore.QEasingCurve.InOutCubic, animation_duration=100, checked=True, change_cursor=False)
         self.switch_control_2 = SwitchControl(bg_color="#777777", circle_color="#11111", active_color="#ff0000", animation_curve=QtCore.QEasingCurve.InOutCubic, animation_duration=100, checked=True, change_cursor=False)
 
-        self.switch_control_1.setAlignment(QtCore.Qt.AlignCenter)
-        self.switch_control_2.setAlignment(QtCore.Qt.AlignCenter)
-
         MISSION_STATUS_layout = QVBoxLayout()
 
         self.label_mission = QLabel('MISSION STATUS')
