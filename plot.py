@@ -1,16 +1,16 @@
-from PyQt5 import QtWidgets, QtCore
-from pyqtgraph import PlotWidget, plot
 import pyqtgraph as pg
-import sys  # We need sys so that we can pass argv to QApplication
-import os
-from random import randint
 
 class graph():
-
     def __init__(self,pens = [{"color":(255,0,0),"name":"NaN"}] , moving=False , n_data=50, x_name="" , y_name="" , title=""):
+        #When showing a moving graph n_data decides the no. of elements shown
+        self.moving = moving
         self.n_data = n_data
+
+        # Creating Graph Widget
         self.graphWidget = pg.PlotWidget()
         self.graphWidget.setBackground((0,0,0))
+
+        # Making plots
         self.plots=[]
         for pen in pens :
             self.plots.append({
@@ -20,17 +20,19 @@ class graph():
                 "name" : pen["name"]
             })
 
-        self.moving = moving
+        # Add Title
         self.graphWidget.setTitle(title, color="w", size="5pt")
+
         # Add Axis Labels
         styles = {"color": "#FFFFFF", "font-size": "15px"}
         self.graphWidget.setLabel("left", y_name, **styles)
         self.graphWidget.setLabel("bottom", x_name, **styles)
+
     def update(self,x,y):
         for i,plot in enumerate(self.plots) :
             if y[i]:
-                plot["y"].append(y[i])  # Add a new random value.
-                plot["x"].append(x)  # Add a new random value.
+                plot["y"].append(y[i])
+                plot["x"].append(x)
             if len(plot["x"]) == 1 :
                 self.graphWidget.addLegend()
                 plot["data_line"] = self.graphWidget.plot(plot["x"],plot["y"], pen=plot["pen"],name=plot["name"])

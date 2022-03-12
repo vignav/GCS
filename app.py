@@ -1,12 +1,11 @@
 from QSwitchControl import SwitchControl
-from PyQt5 import QtWidgets, QtCore, QtWidgets, QtSvg
-import sys  # We need sys so that we can pass argv to QApplication
+from PyQt5 import QtWidgets, QtCore, QtWidgets
+import sys
 import os
 from random import randint
 from plot import graph
 from map_plot import mapWidget
-from PyQt5.QtWidgets import QHBoxLayout,QVBoxLayout,QLabel,QPushButton
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel
+from PyQt5.QtWidgets import QHBoxLayout,QVBoxLayout,QLabel,QPushButton, QApplication, QWidget
 from PyQt5.QtGui import QIcon, QPixmap
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -79,7 +78,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.MENU_widget = QtWidgets.QWidget()
         self.MENU_widget.setLayout(MENU_layout)
-        self.MENU_widget.setStyleSheet("background-color: violet")
+        self.MENU_widget.setStyleSheet("background-color: #7315d1")
         # Container-----------------------------------------------------------------------------------
         self.CONTAINER_label = QLabel('CONTAINER')
         self.CONTAINER_label.setStyleSheet("color: white;")
