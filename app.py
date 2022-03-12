@@ -1,30 +1,46 @@
 from QSwitchControl import SwitchControl
-from PyQt5 import QtWidgets, QtCore
+from PyQt5 import QtWidgets, QtCore, QtWidgets, QtSvg
 import sys  # We need sys so that we can pass argv to QApplication
 import os
 from random import randint
 from plot import graph
 from map_plot import mapWidget
 from PyQt5.QtWidgets import QHBoxLayout,QVBoxLayout,QLabel,QPushButton
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel
+from PyQt5.QtGui import QIcon, QPixmap
+
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
         self.setWindowTitle("GCS")
 
         # Menu
+        self.logo = QLabel()
+        logo_image = QPixmap('./image.jpeg')
+        logo_image = logo_image.scaled(150, 150, QtCore.Qt.KeepAspectRatio)
+        self.logo.setPixmap(logo_image)
+
         self.MENU_label = QLabel('TEAM ID:1020')
         self.start_button = QPushButton()
         self.start_button.setText("START>>")
+        self.start_button.clicked.connect(self.start)
 
         self.stop_button = QPushButton()
         self.stop_button.setText("<<STOP")
+        self.stop_button.clicked.connect(self.stop)
 
-        self.calibrate = QPushButton()
-        self.calibrate.setText("CALIBRATION")
+        self.calibrate_button = QPushButton()
+        self.calibrate_button.setText("CALIBRATION")
+        self.calibrate_button.clicked.connect(self.calibrate)
 
         self.switch_control_1 = SwitchControl(bg_color="#777777", circle_color="#11111", active_color="#ff0000", animation_curve=QtCore.QEasingCurve.InOutCubic, animation_duration=100, checked=True, change_cursor=False)
         self.switch_control_2 = SwitchControl(bg_color="#777777", circle_color="#11111", active_color="#ff0000", animation_curve=QtCore.QEasingCurve.InOutCubic, animation_duration=100, checked=True, change_cursor=False)
 
+        self.switch_control_1.toggled.connect(self.switch1_toggle)
+        self.switch_control_2.toggled.connect(self.switch2_toggle)
+
+        self.toggle1 = True
+        self.toggle2 = True
         MISSION_STATUS_layout = QVBoxLayout()
 
         self.label_mission = QLabel('MISSION STATUS')
@@ -43,20 +59,30 @@ class MainWindow(QtWidgets.QMainWindow):
         self.MISSION_STATUS_widget = QtWidgets.QWidget()
         self.MISSION_STATUS_widget.setLayout(MISSION_STATUS_layout)
         self.MISSION_STATUS_widget.setStyleSheet("border: 1px solid black;")
+
+        self.Packet_count = QLabel('PACKET COUNT : 0')
+        self.RTC = QLabel('')
+        self.Date = QLabel('')
+
         MENU_layout = QVBoxLayout()
+        MENU_layout.addWidget(self.logo, stretch=1)
         MENU_layout.addWidget(self.MENU_label)
         MENU_layout.addWidget(self.start_button)
         MENU_layout.addWidget(self.stop_button)
-        MENU_layout.addWidget(self.calibrate)
+        MENU_layout.addWidget(self.calibrate_button)
         MENU_layout.addWidget(self.switch_control_1)
         MENU_layout.addWidget(self.switch_control_2)
         MENU_layout.addWidget(self.MISSION_STATUS_widget)
+        MENU_layout.addWidget(self.Packet_count)
+        MENU_layout.addWidget(self.RTC)
+        MENU_layout.addWidget(self.Date)
 
         self.MENU_widget = QtWidgets.QWidget()
         self.MENU_widget.setLayout(MENU_layout)
         self.MENU_widget.setStyleSheet("background-color: violet")
-        # Container
+        # Container-----------------------------------------------------------------------------------
         self.CONTAINER_label = QLabel('CONTAINER')
+        self.CONTAINER_label.setStyleSheet("color: white;")
 
         self.graphVoltage = graph([
             {
@@ -93,9 +119,15 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.CONTAINER_widget = QtWidgets.QWidget()
         self.CONTAINER_widget.setLayout(CONTAINER_layout)
+        self.CONTAINER_widget.setStyleSheet("""
+        .QWidget {
+            border: 2px solid white;
+            }
+        """)
 
         # Payload -----------------------------------------------------------------------------------
         self.PAYLOAD_label = QLabel('PAYLOAD', self)
+        self.PAYLOAD_label.setStyleSheet("color: white;")
         self.graphPressure = graph([
             {
                 "color":(0,0,255),
@@ -143,6 +175,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.PAYLOAD_widget = QtWidgets.QWidget()
         self.PAYLOAD_widget.setLayout(PAYLOAD_layout)
+        self.PAYLOAD_widget.setStyleSheet("""
+        .QWidget {
+            border: 2px solid white;
+            }
+        """)
 
         #Main layout ----------------------------------------------------------
         MAIN_layout = QHBoxLayout()
@@ -154,9 +191,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.MAIN_widget = QtWidgets.QWidget()
         self.MAIN_widget.setLayout(MAIN_layout)
-        #self.MAIN_widget.setStyleSheet("background-color: black")
+        self.MAIN_widget.setStyleSheet("background-color: black")
         self.setCentralWidget(self.MAIN_widget)
 
+        self.packet_count = 0
         self.number = 0
         self.timer = QtCore.QTimer()
         self.timer.setInterval(1000)
@@ -176,11 +214,38 @@ class MainWindow(QtWidgets.QMainWindow):
         self.graphPressure_2.update( self.number, [randint(0,100)])  # Add a new random value.
         self.graphTemprature_2.update( self.number, [randint(0,100)])  # Add a new random value.
 
+        self.Packet_count.setText("PACKET COUNT : "+str(self.packet_count))
+        self.packet_count += 1
         for label in self.labels :
             label.setStyleSheet("background-color: grey")
 
         self.labels[self.number%len(self.labels)].setStyleSheet("background-color: red")
         self.number += 1
+
+    def switch1_toggle(self):
+        if self.toggle1 :
+            self.toggle1 = False
+            print("toggled 1 off")
+        else :
+            self.toggle1 = True
+            print("toggled 1 on")
+
+    def switch2_toggle(self):
+        if self.toggle2 :
+            self.toggle2 = False
+            print("toggled 2 off")
+        else :
+            self.toggle2 = True
+            print("toggled 2 on")
+
+    def start(self):
+        print("start")
+
+    def stop(self):
+        print("stop")
+
+    def calibrate(self):
+        print("calibrate")
 
 app = QtWidgets.QApplication(sys.argv)
 w = MainWindow()

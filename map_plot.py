@@ -13,14 +13,12 @@ class mapWidget(QtWidgets.QWidget):
     def initMap(self):
         self.view = QtWebEngineWidgets.QWebEngineView()
         self.lay = QtWidgets.QHBoxLayout()
-        self.setMinimumSize(300, 300)
-        self.resize(300,300)
+        self.setMinimumSize(100, 200)
         self.lay.addWidget(self.view, stretch=1)
         self.setLayout(self.lay)
 
     def update(self,lat=0,lon=0):
-        m = folium.Map(width=300,height=300,
-            location=[lat, lon], zoom_start=10
+        m = folium.Map(location=[lat, lon], zoom_start=10
         )
         data = io.BytesIO()
         folium.Marker(
