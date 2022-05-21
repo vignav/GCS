@@ -193,33 +193,40 @@ class MainWindow(QtWidgets.QMainWindow):
         self.MAIN_widget.setStyleSheet("background-color: black")
         self.setCentralWidget(self.MAIN_widget)
 
+        self.timer_n = 0 ;
+
         self.packet_count = 0
         self.number = 0
         self.timer = QtCore.QTimer()
-        self.timer.setInterval(1000)
+        self.timer.setInterval(250)
         self.timer.timeout.connect(self.update)
         self.timer.start()
 
     def update(self):
-        self.map.update(self.number/10+16 , self.number/10 + 78)
+        print("wow")
+        if self.timer_n%4 == 0 :
+            self.map.update(self.number/10+16 , self.number/10 + 78)
 
-        self.graphVoltage.update( self.number, [randint(0,100)])  # Add a new random value.
-        self.graphAltitude.update( self.number, [randint(0,100)])  # Add a new random value.
-        self.graphAxis.update( self.number, [randint(0,100),randint(0,100),randint(0,100)])  # Add a new random value.
+            self.graphVoltage.update( self.number, [randint(0,100)])  # Add a new random value.
+            self.graphAltitude.update( self.number, [randint(0,100)])  # Add a new random value.
+            self.graphAxis.update( self.number, [randint(0,100),randint(0,100),randint(0,100)])  # Add a new random value.
 
-        self.graphPressure.update( self.number, [randint(0,100)])  # Add a new random value.
-        self.graphTemprature.update( self.number, [randint(0,100)])  # Add a new random value.
-        self.graphAxis_dps.update( self.number, [randint(0,100),randint(0,100),randint(0,100)])  # Add a new random value.
-        self.graphPressure_2.update( self.number, [randint(0,100)])  # Add a new random value.
-        self.graphTemprature_2.update( self.number, [randint(0,100)])  # Add a new random value.
+            self.graphPressure.update( self.number, [randint(0,100)])  # Add a new random value.
+            self.graphTemprature.update( self.number, [randint(0,100)])  # Add a new random value.
+            self.graphAxis_dps.update( self.number, [randint(0,100),randint(0,100),randint(0,100)])  # Add a new random value.
+            self.graphPressure_2.update( self.number, [randint(0,100)])  # Add a new random value.
+            self.graphTemprature_2.update( self.number, [randint(0,100)])  # Add a new random value.
 
-        self.Packet_count.setText("PACKET COUNT : "+str(self.packet_count))
-        self.packet_count += 1
-        for label in self.labels :
-            label.setStyleSheet("background-color: grey")
+            self.Packet_count.setText("PACKET COUNT : "+str(self.packet_count))
+            self.packet_count += 1
+            for label in self.labels :
+                label.setStyleSheet("background-color: grey")
 
-        self.labels[self.number%len(self.labels)].setStyleSheet("background-color: red")
-        self.number += 1
+            self.labels[self.number%len(self.labels)].setStyleSheet("background-color: red")
+            self.number += 1
+            self.timer_n = 0
+
+        self.timer_n += 1
 
     def switch1_toggle(self):
         if self.toggle1 :
